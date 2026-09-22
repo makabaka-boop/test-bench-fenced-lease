@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: hvtest
+      POSTGRES_PASSWORD: hvtest
+      POSTGRES_DB: hvtest
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hvtest -d hvtest"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    ports:
+      - "5432:5432"
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://hvtest:hvtest@db:5432/hvtest
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:

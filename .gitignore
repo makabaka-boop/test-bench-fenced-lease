@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# 本地环境
+.env
+*.local
+
+# 本地 PostgreSQL 数据目录（免 Docker 运行时）
+.pgdata/
