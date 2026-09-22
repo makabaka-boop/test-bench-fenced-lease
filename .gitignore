@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local PostgreSQL data (when running tests outside Docker)
+.pgdata/
+
+# Environment / editor
+.env
+*.swp
+.DS_Store

@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bench
+      POSTGRES_PASSWORD: bench
+      POSTGRES_DB: benchdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bench -d benchdb"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      target: base
+    environment:
+      DATABASE_URL: postgres://bench:bench@db:5432/benchdb
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Integration tests against the real database:
+  #   docker compose run --rm api-tests
+  api-tests:
+    build:
+      context: .
+      target: tests
+    working_dir: /app
+    environment:
+      DATABASE_URL: postgres://bench:bench@db:5432/benchdb
+    volumes:
+      - ./tests:/app/tests
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
